@@ -1,240 +1,126 @@
-package org.usfirst.frc.team6831.robot;
+/*----------------------------------------------------------------------------*/
+/* Copyright (c) 2017-2018 FIRST. All Rights Reserved.                        */
+/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* must be accompanied by the FIRST BSD license file in the root directory of */
+/* the project.                                                               */
+/*----------------------------------------------------------------------------*/
 
-import java.util.Objects;
+package frc.robot;
 
 import com.kauailabs.navx.frc.AHRS;
-
-import edu.wpi.first.wpilibj.CameraServer;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.Talon;
-import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import java.io.*;
+import frc.robot.functions.classConstruct;
+import frc.robot.functions.driveWithAHRS;
+import frc.robot.functions.driveWithEncoders;
+import frc.robot.functions.driveWithTime;
+import frc.robot.functions.moveServos;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
+/**
+ * The VM is configured to automatically run this class, and to call the
+ * functions corresponding to each mode, as described in the IterativeRobot
+ * documentation. If you change the name of this class or the package after
+ * creating this project, you must also update the manifest file in the resource
+ * directory.
+ */
 
+public class Robot extends IterativeRobot {
+  Talon motorLeft = new Talon(0);
+  Talon motorRight= new Talon(1);
+  Encoder encoderML;
+  Encoder encoderMR;
 
-public class Robot extends TimedRobot {
-	
-	WPI_TalonSRX motorRight = new WPI_TalonSRX(1);
-	WPI_TalonSRX motorRightFollower1 = new WPI_TalonSRX(2);
-	WPI_TalonSRX motorRightFollower2 = new WPI_TalonSRX(3);
-	WPI_TalonSRX canmotor4 = new WPI_TalonSRX(4);
-	WPI_TalonSRX canmotor5 = new WPI_TalonSRX(5);
-	WPI_TalonSRX motorLeftFollower2 = new WPI_TalonSRX(6);
-	WPI_TalonSRX motorLeftFollower1 = new WPI_TalonSRX(7);
-	WPI_TalonSRX motorLeft = new WPI_TalonSRX(8);
-	
-	public static Joystick stick1 = new Joystick(0);
+  AHRS ahrs;
 
-	@Override
-	public void robotInit() {
-		motorRight.set(ControlMode.PercentOutput, 0);
-		motorRightFollower1.follow(motorRight);
-		motorRightFollower2.follow(motorRight);
-		
-		motorLeft.set(ControlMode.PercentOutput, 0);
-		motorLeft.setInverted(true);
-		motorLeftFollower1.follow(motorLeft);
-		motorLeftFollower1.setInverted(true);
-		motorLeftFollower2.follow(motorLeft);
-		motorLeftFollower2.setInverted(true);
-		
-		
-		CameraServer.getInstance().startAutomaticCapture();
-		SmartDashboard.putString("DB/String 0", "init");
-	}
+  classConstruct toConstructClass = new classConstruct();
+  driverControl drivingControl = new driverControl();
+  /*
+  here are the functions being described, anything in quotes like
+  "this is so and so variable"
+  describes what should be put in that argument for the function
+  */
+  driveWithAHRS drivingAHRS = new driveWithAHRS();
+  /*
+  drivingAHRS.driveStraight(Talon left, Talon right, double power, double turn, AHRS ahrs)
+  drivingAHRS.driveStraight(Talon left, Talon right, double power, double distance, AHRS ahrs)
+  */
+  driveWithEncoders drivingENCODERS = new driveWithEncoders();
+  /*
+  
+  */
+  driveWithTime drivingTIME = new driveWithTime();
+  /*
+  
+  */
+  moveServos movingSERVOS = new moveServos();
+  /*
+  moveWithAngle(Servo servo)
+  moveWithValue(Servo "put the servo variable here",double "this is the value the servo is set to")
+  
+  */
 
-	@Override
-	public void disabledInit() {
-	}
+  public int control;
+  double robotTimer;
+  double one = 1;
+  double thousand = 1000;
+  private Timer rbtTimer = new Timer();
 
-	@Override
-	public void disabledPeriodic() {
-		SmartDashboard.putString("help", "Functional");
-	}
+  //why isnt this working fuck my life
+  /*
+   * This function is run when the robot is first started up and should be
+   * used for any initialization code.
+   */
+  @Override
+  public void robotInit() {
+    motorRight.setInverted(true);
+    
+    
+  }
 
+  /**
+   * This function is called periodically during test mode.
+   */
+  @Override
+  public void testPeriodic() {
 
-	@Override
-	public void autonomousInit() {
-	}
-	
-	@Override
-	public void autonomousPeriodic() {
-	}
+  }
+  /**
+   * This function is run once each time the robot enters autonomous mode.
+   */
+  @Override
+  public void autonomousInit() {
 
-	@Override
-	public void teleopInit() {
-	}
+  }
 
-	/**
-	 * This function is called periodically during operator control.
-	 */
-	@Override
-	public void teleopPeriodic() {
-		motorRight.set(stick1.getRawAxis(1)+stick1.getRawAxis(2));
-		motorLeft.set(stick1.getRawAxis(1)-stick1.getRawAxis(2));
-		
-		
-		SmartDashboard.putString("DB/String 3", "Functional");
-		Scheduler.getInstance().run();
-		
-	}
-	/**
-	 * This function is called periodically during test mode.
-	 */
-	@Override
-	public void testPeriodic() {
-		
-	}
-	
-/*	public void driveStraight(double DSspeed, double DStime) {
-		SmartDashboard.putString("DB/String 3", "Drive Straight");
-		switch(functionControl) {
-		case 0:
-			FunctionAngle = angle;
-			initTime = timer.get();
-			angleCorrection = 70;
-			functionControl += 1;
-			break;
-		case 1:
-			
-			SmartDashboard.putNumber("DB/String 5", DStime-(timer.get()-initTime));
-			SmartDashboard.putNumber("DB/String 6", functionAngleCorrection);
-			SmartDashboard.putNumber("DB/String 7", DSspeed);
-			functionAngleCorrection = ((angle - FunctionAngle)/angleCorrection);
-			if (functionAngleCorrection > 0.4) functionAngleCorrection = 0.4;
-			setMotors(DSspeed + functionAngleCorrection, DSspeed - functionAngleCorrection);
-			if(timer.get() - initTime > DStime) {
-				functionControl += 1;
-				}
-			break;
-		case 2:
-			setMotors(0, 0);
-			functionControl = 0;
-			control += 1;
-		}
-	}
-	
-	public void updateGyro() {
-		float yaw = ahrs.getYaw();
-		if (lastangle - yaw > 250) {
-			anglemultiplier += 1;
-		}
-		if (lastangle - yaw < -250) { 
-			anglemultiplier -= 1;
-		}
-		angle = yaw + (360 * anglemultiplier);
-		lastangle = yaw;
-	}
-	
-	public void setMotors (double power1, double power2){
-		leftDrive.set(power1);
-		rightDrive.set(power2);
-	}
+  /**
+   * This function is called periodically during autonomous.
+   */
+  @Override
+  public void autonomousPeriodic() {
+    drivingENCODERS.driveStraight(motorLeft,motorRight, .5,500,encoderML,encoderMR);
 
-	public void turning(double Tangle) {
-		SmartDashboard.putString("DB/String 3", "Turning");
-		switch(functionControl) {
-		case 0:
-			initTime = timer.get();
-			FunctionAngle = Tangle+angle;
-			angleCorrection = 90;
-			functionControl += 1;
-			break;
-		case 1:
-			SmartDashboard.putString("DB/String 5", Double.toString(FunctionAngle-angle));
-			SmartDashboard.putString("DB/String 6", Double.toString(FunctionAngle));
-			SmartDashboard.putString("DB/String 7", Double.toString(functionAngleCorrection));
-			SmartDashboard.putString("DB/String 8", Double.toString(2-(timer.get()-initTime)));
-			
-			functionAngleCorrection = ((angle - FunctionAngle)/angleCorrection);
-			if (functionAngleCorrection > 0.4) functionAngleCorrection = 0.4;
-			if (functionAngleCorrection < -0.4) functionAngleCorrection = -0.4;
-			
-			setMotors(functionAngleCorrection, -functionAngleCorrection);
-			/*if(Math.abs(angle-FunctionAngle)<5) {
-				functionControl += 1;
-				}*\/
-			if(timer.get()-initTime > 1.7) {
-				functionControl += 1;
-			}
-			break;
-		case 2:
-			setMotors(0, 0);
-			functionControl = 0;
-			control += 1;
-		}
-	}
+  }
+  /**
+   * This function is called once each time the robot enters teleoperated mode.
+   */
+  @Override
+  public void teleopInit() {
 
-	public void driveWithEncoders(double distanceInInches, double speed, double FunctionAngle) {
-		SmartDashboard.putString("DB/String 3", "Drive With Encoders");
-		switch(functionControl) {
-		case 0:
-			eLeft.reset();
-			eRight.reset();
-			initDistance = eLeft.getDistance()/54.4;
-			initTime = timer.get();
-			//FunctionAngle = angle;
-			angleCorrection = 90;
-			positionCorrection = 50;
-			accelerationCorrection = 2;
-		positionDerivativeCorrection = 20;  	
-			SmartDashboard.putString("DB/String 5", Double.toString((eLeft.getDistance()/54.4 - initDistance)));
-			SmartDashboard.putString("DB/String 6", Double.toString((distanceInInches)));
-			functionControl = 1;
-			functionPositionCorrection = ((distanceInInches)-(eLeft.getDistance()/54.4))/positionCorrection;
-			if (functionPositionCorrection > speed) functionPositionCorrection = speed;
-			if (functionPositionCorrection < -speed) functionPositionCorrection = -speed;
-			break;
-		case 1:
-			SmartDashboard.putString("DB/String 5", Double.toString((eLeft.getDistance()/54.4 - initDistance)));
-			SmartDashboard.putString("DB/String 6", Double.toString((distanceInInches)));
-			SmartDashboard.putString("DB/String 7", Double.toString(positionDerivative));
-			SmartDashboard.putString("DB/String 8", Double.toString(functionPositionCorrection));
-			SmartDashboard.putString("DB/String 9", Double.toString((functionPositionCorrection+positionDerivative+.2+functionAngleCorrection)*functionAccelerationCorrection));
-			
-			
-			functionAccelerationCorrection = (timer.get()-initTime)/accelerationCorrection;
-			if (functionAccelerationCorrection > 1) functionAccelerationCorrection = 1;
-			if (functionAccelerationCorrection < -1) functionAccelerationCorrection = -1;
-			
-			
-			positionDerivative = functionPositionCorrection;
-			functionPositionCorrection = ((distanceInInches)-((eLeft.getDistance()/54.4)-initDistance))/positionCorrection;
-			if (functionPositionCorrection > speed) functionPositionCorrection = speed;
-			if (functionPositionCorrection < -speed) functionPositionCorrection = -speed;
-			positionDerivative = (functionPositionCorrection - positionDerivative)*positionDerivativeCorrection;
-			
-			
-			functionAngleCorrection = ((angle - FunctionAngle)/angleCorrection);
-			if (functionAngleCorrection > speed) functionAngleCorrection = speed;
-			if (functionAngleCorrection < -speed) functionAngleCorrection = -speed;
-			
-			setMotors((functionPositionCorrection+positionDerivative+(distanceInInches/Math.abs(distanceInInches))*.2+functionAngleCorrection)*functionAccelerationCorrection, (functionPositionCorrection+positionDerivative+(distanceInInches/Math.abs(distanceInInches))*.2-functionAngleCorrection)*functionAccelerationCorrection);
-			
-			
-			if(Math.abs((eLeft.getDistance()/54.4 - initDistance)-(distanceInInches)) < 1) {
-				functionControl ++;
-			}
-			break;
-		case 2:
-			setMotors(0,0);
-			control ++;
-			functionControl = 0;
-			eLeft.reset();
-			eRight.reset();
-			break;
-		}
-	}*/
+  }
+
+  /**
+   * This function is called periodically during teleoperated mode.
+   */
+  @Override
+  public void teleopPeriodic() {
+
+  }
 
 }
-
-
-
