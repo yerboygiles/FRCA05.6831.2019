@@ -4,7 +4,6 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
-import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
@@ -26,16 +25,16 @@ public class driveTrain extends subsystem{
 			if(Math.abs(stick1.getRawAxis(1)) > .4) {
 				gear = State.UPSHIFTING;
 			}
-			motorRight.set((stick1.getRawAxis(1)+(stick1.getRawAxis(2)*.75)/2)*2.174);
-			motorLeft.set((stick1.getRawAxis(1)-(stick1.getRawAxis(2)*.75)/2)*2.174);
+			motorRight.set((stick1.getRawAxis(1)+(stick1.getRawAxis(2)*.75)/3)*2.174);
+			motorLeft.set((stick1.getRawAxis(1)-(stick1.getRawAxis(2)*.75)/3)*2.174);
 			break;
 		case HIGHGEAR:
 			SmartDashboard.putString("DB/String 3", "high");
 			if(Math.abs(stick1.getRawAxis(1)) < .3) {
 				gear = State.DOWNSHIFTING;
 			}
-			motorRight.set(stick1.getRawAxis(1)+(stick1.getRawAxis(2)*.75)/2);
-			motorLeft.set(stick1.getRawAxis(1)-(stick1.getRawAxis(2)*.75)/2);
+			motorRight.set(stick1.getRawAxis(1)+(stick1.getRawAxis(2)*.75)/3);
+			motorLeft.set(stick1.getRawAxis(1)-(stick1.getRawAxis(2)*.75)/3);
 			break;
 		case UPSHIFTING:
 			SmartDashboard.putString("DB/String 3", "sUp");
@@ -44,6 +43,8 @@ public class driveTrain extends subsystem{
 		case DOWNSHIFTING:
 			SmartDashboard.putString("DB/String 3", "sDown");
 			downshift();
+			break;
+		default:
 			break;
 		}
 		
@@ -61,7 +62,6 @@ public class driveTrain extends subsystem{
 	public WPI_TalonSRX motorLeftFollower1;
 	public WPI_TalonSRX motorLeft;
 	public 	DoubleSolenoid shifter;
-	public AHRS ahrs;
 	Timer time = new Timer();
 	Joystick stick1;
 	

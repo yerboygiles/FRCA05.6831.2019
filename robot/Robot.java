@@ -2,10 +2,8 @@ package org.usfirst.frc.team6831.robot;
 
 import java.util.ArrayList;
 
-//import org.usfirst.frc.team6831.robot.commands.*;
+import org.usfirst.frc.team6831.robot.commands.*;
 import org.usfirst.frc.team6831.robot.subsystems.*;
-
-import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.I2C.Port;
@@ -24,7 +22,8 @@ public class Robot extends TimedRobot {
 	public static Joystick stick1 = new Joystick(0);
 	driveTrain dt = new driveTrain(time, stick1, 1, 2, 3, 8, 7, 6, 0, 1);
 	sweeper sweeper = new sweeper(stick1, 4);
-	//ArrayList<command> commands = new ArrayList<command>();
+	ArrayList<command> commands = new ArrayList<command>();
+	State functionState = State.IDLE;
 
 	@Override
 	public void robotInit() {
@@ -54,28 +53,38 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousInit() {
 		SmartDashboard.putString("DB/String 0", "Initializing Autonomous");
-		//commands.add(new EncoderDrive());
+		commands.add(new EncoderDrive());
 	}
 	
 	@Override
 	public void autonomousPeriodic() {
 		SmartDashboard.putString("DB/String 0", "Autonomous");
 		
-		/*for(int i = 0; i < commands.size(); i++) {
-			switch(command.functionState) {
+		for(int i = 0; i < commands.size();) {
+			switch(functionState) {
 			case INITIALIZING:
-				commands.get(i).init(this);
+				if(commands.get(i).init(this)) {
+					functionState = State.UPDATING;
+				}
 				break;
 			case UPDATING:
-				commands.get(i).update(this);
+				if(commands.get(i).update(this)) {
+					functionState = State.RESOLVING;
+				}
 				break;
 			case RESOLVING:
-				commands.get(i).resolve(this);
+				if(commands.get(i).resolve(this)){
+					functionState = State.IDLE;
+				};
+				break;
+			case IDLE:
+				i++;
+				functionState = State.INITIALIZING;
 				break;
 			default:
 				break;
 			}
-		}*/
+		}
 	}
 
 	@Override
