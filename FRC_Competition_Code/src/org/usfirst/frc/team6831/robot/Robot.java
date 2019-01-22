@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import org.usfirst.frc.team6831.robot.commands.*;
 import org.usfirst.frc.team6831.robot.subsystems.*;
 
-import com.kauailabs.navx.frc.AHRS;
-
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.I2C.Port;
 import edu.wpi.first.wpilibj.Joystick;
