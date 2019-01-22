@@ -19,7 +19,7 @@ public class Robot extends TimedRobot {
 	
 	
 	Timer time = new Timer();
-	//]AHRS ahrs = new AHRS(Port.kMXP);
+	//AHRS ahrs = new AHRS(Port.kMXP);
 	
 	public static Joystick stick1 = new Joystick(0);
 	driveTrain dt = new driveTrain(time, stick1, 1, 2, 3, 8, 7, 6, 0, 1);
